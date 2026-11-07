@@ -72,79 +72,56 @@ Figure: Samtools coverage tabular output showing per-chromosome alignment statis
 ## Part C: Chromosome Grouping (`chromosome_groups.csv`)
 To prepare for the R analysis, I created a plain-text CSV file named `chromosome_groups.csv` mapping the RefSeq accessions to their respective chromosome groups (`A` for autosomes and `X` for the sex chromosome).
 
-rname,group
-NC_006583.4,A
-NC_006584.4,A
-NC_006585.4,A
-NC_006586.4,A
-NC_006587.4,A
-NC_006588.4,A
-NC_006589.4,A
-NC_006590.4,A
-NC_006591.4,A
-NC_006592.4,A
-NC_006593.4,X
+| Reference Name (`rname`) | Group (`group`) | Description / Assignment |
+| :--- | :---: | :--- |
+| `NC_006583.4` | A | Autosome |
+| `NC_006584.4` | A | Autosome |
+| `NC_006585.4` | A | Autosome |
+| `NC_006586.4` | A | Autosome |
+| `NC_006587.4` | A | Autosome |
+| `NC_006588.4` | A | Autosome |
+| `NC_006589.4` | A | Autosome |
+| `NC_006590.4` | A | Autosome |
+| `NC_006591.4` | A | Autosome |
+| `NC_006592.4` | A | Autosome |
+| `NC_006593.4` | X | Sex Chromosome (X) |
 
 ## Part D: R Analysis 
 I ran the provided R analysis script in RStudio (sex_depth_analysis.R) using chromosome_coverage.tsv and chromosome_groups.csv.
 
 **R Code Used:**
 
-# Sex-chromosome dosage from whole-genome DNA read depth
-# Input: Samtools coverage TSV + student chromosome labels
-cov <- read.delim("chromosome_coverage.tsv", comment.char = "",
-check.names = FALSE, stringsAsFactors = FALSE)
-names(cov)[1] <- "rname" # Accepts the '#rname' header
-if (!"meandepth" %in% names(cov)) stop("Missing meandepth column")
-key <- read.csv("chromosome_groups.csv", stringsAsFactors = FALSE)
-if (!all(c("rname", "group") %in% names(key))) stop("Bad key columns")
-key$rname <- trimws(key$rname)
-key$group <- toupper(trimws(key$group))
-if (anyDuplicated(key$rname)) stop("Repeated rname in key file")
-if (!all(key$group %in% c("A", "X", "Y", "Z", "W")))
-stop("Use only A, X, Y, Z or W in the group column")
-x <- merge(key, cov[, c("rname", "meandepth")],
-by = "rname", all.x = TRUE, sort = FALSE)
-x$meandepth <- suppressWarnings(as.numeric(x$meandepth))
-if (anyNA(x$meandepth)) stop("Missing depths: check rname matches")
-if (any(x$meandepth < 0)) stop("Negative depth is not valid")
-if (sum(x$group == "A") < 5) stop("Label at least 5 autosomes")
-if ("X" %in% x$group && "Z" %in% x$group)
-stop("Choose either an XY or a ZW species, not both")
-if (sum(x$group == "X") == 1 && !any(x$group == "Z")) {
-target <- "X"
-one_copy <- "XY-like"
-two_copies <- "XX-like"
-} else if (sum(x$group == "Z") == 1 && !any(x$group == "X")) {
-target <- "Z"
-one_copy <- "ZW-like"
-two_copies <- "ZZ-like"
-} else stop("Label exactly one X or exactly one Z chromosome")
-A <- median(x$meandepth[x$group == "A"])
-if (!is.finite(A) || A <= 0) stop("No usable autosomal coverage")
-x$relative_depth <- x$meandepth / A
-ratio <- x$relative_depth[x$group == target]
-call <- if (ratio >= 0.80) two_copies else if (ratio <= 0.65)
-one_copy else "Ambiguous"
-if (A < 1) call <- "Inconclusive: very low autosomal depth"
-# Additional Y or W evidence can support, but not prove, a call
-partner <- if (target == "X") "Y" else "W"
-partner_ratio <- if (partner %in% x$group)
-x$relative_depth[x$group == partner][1] else NA_real_
-# Export results and a simple, reproducible figure
-dir.create("results", showWarnings = FALSE)
-write.csv(x, "results/chromosome_relative_depth.csv", row.names = FALSE)
-png("results/chromosome_depth.png", width = 1000, height = 580)
-par(mar = c(8, 4, 3, 1))
-barplot(x$relative_depth, names.arg = x$rname, las = 2,
-ylab = "Depth relative to median autosome",
-main = "Autosomal and sex-chromosome depth", cex.names = 0.75)
-abline(h = c(0.5, 1.0), lty = 2)
-dev.off()
-summary <- c(paste("Median autosome depth:", round(A, 3)),
-paste(target, "/ A ratio:", round(ratio, 3)),
-paste(partner, "/ A ratio:", round(partner_ratio, 3)),
-paste("Dosage interpretation:", call),
+<img width="648" height="477" alt="image" src="https://github.com/user-attachments/assets/7ecad28b-e9bc-4a5b-9e74-02deff7c22fe" />
+
+<img width="648" height="445" alt="image" src="https://github.com/user-attachments/assets/3fee63a1-b186-43b2-8c1a-705ca315e8bb" />
+
+## Part E: Results Interpretation & Report Questions
+
+### Q1: What species did you choose, and what evidence supports a diploid XX/XY or ZZ/ZW system?
+* **Answer:** I chose *Canis lupus familiaris* (domestic dog). It possesses a diploid karyotype ($2n = 78$) characterized by a well-established XX/XY chromosomal sex-determination system, where females possess two X chromosomes and males possess one X and one Y chromosome.
+
+### Q2: What are your assembly accession, WGS run, and both BioSample accessions? Are the donors the same?
+* **Answer:** 
+  * **RefSeq Assembly Accession:** `GCF_000002285.5`
+  * **WGS Run Accession:** `SRR13131602`
+  * **Assembly Donor BioSample:** `SAMN02953603`
+  * **WGS BioSample Accession:** `SAMN02953603`
+  * **Are donors the same?** Yes, both the reference genome assembly and the whole-genome sequencing reads originate from the exact same individual donor (Tasha, a female Boxer).
+
+### Q3: Which sequences were used as autosomes and as X or Z? How did you verify their identities?
+* **Answer:** I used ten autosomal RefSeq accessions (`NC_006583.4` through `NC_006592.4`) and the canonical X chromosome accession (`NC_006593.4`). I verified their identities by cross-referencing the NCBI assembly report and checking chromosome coordinate lengths and identifiers in my `chromosome_coverage.tsv` output.
+
+### Q4: What are the median autosomal depth, X:A or Z:A ratio, and inferred sex-chromosome complement?
+* **Answer:** 
+  * **Median Autosomal Depth ($A$):** 3.935×
+  * **X:A Ratio:** 1.018
+  * **Inferred Sex-Chromosome Complement:** XX-like
+
+### Q5: Does your result agree with the recorded sex of the WGS donor, if reported? Explain any discrepancy or uncertainty.
+* **Answer:** Yes, my result completely agrees with the recorded metadata. The WGS donor BioSample (`SAMN02953603`) corresponds to a female dog (Tasha), and my calculated X:A ratio of 1.018 falls right around the expected 1.0 threshold for an XX individual, confirming strong concordance between sequence coverage data and donor metadata.
+
+### Q6: Why is a chromosome-level assembly alone insufficient for a reliable read-depth sex inference?
+* **Answer:** A reference assembly only provides the structural framework of the genome and does not contain empirical sequencing data for the specific individual being tested. Without aligning individual WGS reads to compute relative read depth coverage across chromosomes, it is impossible to determine chromosomal copy number or dosage variation.
 "Compare with BioSample sex and discuss limitations.")
 writeLines(summary, "results/sex_inference.txt")
 cat(paste(summary, collapse = "\n"), "\n")
