@@ -116,10 +116,9 @@ I ran the provided R analysis script in RStudio (sex_depth_analysis.R) using chr
 > Bar plot of per-chromosome sequencing depth relative to the median autosome ($A = 3.935\times$) for *Canis lupus familiaris*. The dashed horizontal lines indicate the expected coverage thresholds for two-copy (1.0) and one-copy (0.5) chromosomal states. The target X chromosome (`NC_006593.4`) displays a relative depth of 1.018, corresponding to an XX-like dosage interpretation.
 
 ### Q1: What species did you choose, and what evidence supports a diploid XX/XY or ZZ/ZW system?
-* **Answer:** I chose *Canis lupus familiaris* (domestic dog). It possesses a diploid karyotype ($2n = 78$) characterized by a well-established XX/XY chromosomal sex-determination system, where females possess two X chromosomes and males possess one X and one Y chromosome.
+* I chose *Canis lupus familiaris* (domestic dog). It possesses a diploid karyotype ($2n = 78$) characterized by a well-established XX/XY chromosomal sex-determination system, where females possess two X chromosomes and males possess one X and one Y chromosome.
 
-### Q2: What are your assembly accession, WGS run, and both BioSample accessions? Are the donors the same?
-* **Answer:** 
+### Q2: What are your assembly accession, WGS run, and both BioSample accessions? Are the donors the same? 
   * **RefSeq Assembly Accession:** `GCF_000002285.5`
   * **WGS Run Accession:** `SRR13131602`
   * **Assembly Donor BioSample:** `SAMN02953603`
@@ -127,19 +126,18 @@ I ran the provided R analysis script in RStudio (sex_depth_analysis.R) using chr
   * **Are donors the same?** Yes, both the reference genome assembly and the whole-genome sequencing reads originate from the exact same individual donor (Tasha, a female Boxer).
 
 ### Q3: Which sequences were used as autosomes and as X or Z? How did you verify their identities?
-* **Answer:** I used ten autosomal RefSeq accessions (`NC_006583.4` through `NC_006592.4`) and the canonical X chromosome accession (`NC_006593.4`). I verified their identities by cross-referencing the NCBI assembly report and checking chromosome coordinate lengths and identifiers in my `chromosome_coverage.tsv` output.
+* I used ten autosomal RefSeq accessions (`NC_006583.4` through `NC_006592.4`) and the canonical X chromosome accession (`NC_006593.4`). I verified their identities by cross-referencing the NCBI assembly report and checking chromosome coordinate lengths and identifiers in my `chromosome_coverage.tsv` output.
 
-### Q4: What are the median autosomal depth, X:A or Z:A ratio, and inferred sex-chromosome complement?
-* **Answer:** 
+### Q4: What are the median autosomal depth, X:A or Z:A ratio, and inferred sex-chromosome complement? 
   * **Median Autosomal Depth ($A$):** 3.935×
   * **X:A Ratio:** 1.018
   * **Inferred Sex-Chromosome Complement:** XX-like
 
 ### Q5: Does your result agree with the recorded sex of the WGS donor, if reported? Explain any discrepancy or uncertainty.
-* **Answer:** Yes, my result completely agrees with the recorded metadata. The WGS donor BioSample (`SAMN02953603`) corresponds to a female dog (Tasha), and my calculated X:A ratio of 1.018 falls right around the expected 1.0 threshold for an XX individual, confirming strong concordance between sequence coverage data and donor metadata.
+*  Yes, my result completely agrees with the recorded metadata. The WGS donor BioSample (`SAMN02953603`) corresponds to a female dog (Tasha), and my calculated X:A ratio of 1.018 falls right around the expected 1.0 threshold for an XX individual, confirming strong concordance between sequence coverage data and donor metadata.
 
 ### Q6: Why is a chromosome-level assembly alone insufficient for a reliable read-depth sex inference?
-* **Answer:** A reference assembly only provides the structural framework of the genome and does not contain empirical sequencing data for the specific individual being tested. Without aligning individual WGS reads to compute relative read depth coverage across chromosomes, it is impossible to determine chromosomal copy number or dosage variation.
+*  A reference assembly only provides the structural framework of the genome and does not contain empirical sequencing data for the specific individual being tested. Without aligning individual WGS reads to compute relative read depth coverage across chromosomes, it is impossible to determine chromosomal copy number or dosage variation.
 
 ## Technical Limitations
 1. **Low Coverage Depth:** The median autosomal coverage depth is ~3.94×, which introduces potential stochastic sampling variability across genomic regions.
