@@ -6,7 +6,7 @@ Cell and Molecular Biology (section B)
 
 ## Part A: Organism & Assembly Metadata
 * **Species:** *Canis lupus familiaris* (Domestic Dog)
-* Study Question: Can we accurately infer the sex-chromosome complement ($XX$ vs. $XY$) of a domestic dog (Canis lupus familiaris) by calculating the relative read-depth dosage ratio of Chromosome X to autosomes ($X:A$) from Whole-Genome Sequencing (WGS) data mapped against a reference assembly?
+* **Study Question:** Can we accurately infer the sex-chromosome complement ($XX$ vs. $XY$) of a domestic dog (*Canis lupus familiaris*) by calculating the relative read-depth dosage ratio of Chromosome X to autosomes ($X:A$) from Whole-Genome Sequencing (WGS) data mapped against a reference assembly?
 * **Assembly Name:** Dog10K_Boxer_Tasha (canFam6)
 * **RefSeq Assembly Accession:** GCF_000002285.5  https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_000002285.4/
 * **GenBank Assembly Accession:** GCA_000002285.4
@@ -151,4 +151,3 @@ I ran the provided R analysis script in RStudio (sex_depth_analysis.R) using chr
 * NCBI Datasets (Genome): (https://www.ncbi.nlm.nih.gov/datasets/genome/)
 * NCBI SRA:(https://www.ncbi.nlm.nih.gov/sra)
 * UseGalaxy:(https://usegalaxy.org)
-* Samtools Coverage Documentation:(https://www.htslib.org/doc/samtools-coverage.html)
